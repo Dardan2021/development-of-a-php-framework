@@ -41,27 +41,85 @@ class userModel extends Database
             $querySql = implode(",", $queryArray);
             $this->Query("SELECT * FROM " . "$tableName " . "WHERE " . "$querySql");
 
-            if(isset($params['fetch']))
-            {
-                switch($params['fetch'])
-                {
-                    case 'array':
-
-                        return $this->fetchData();
-
-                        break;
-
-                    case 'value':
-
-                        return $this->singleData();
-
-                        break;
-                }
-            }
-
             return $this->fetchData();
         }
 
+        if(isset($params['fetch']))
+        {
+            switch($params['fetch'])
+            {
+                case 'array':
+
+                    return $this->fetchData();
+
+                    break;
+
+                case 'value':
+
+                    return $this->singleData();
+
+                    break;
+            }
+        }
+
+        if(isset($params['join']))
+        {
+            foreach ($params['join']['table'] as $joinTableName)
+            {
+                $queryArrayTableName[] = $joinTableName;
+            }
+
+            foreach ($params['join']['alias'] as $aliasName)
+            {
+                $queryArrayAlias[] = $aliasName;
+            }
+
+            foreach ($params['join']['field'] as $fieldName)
+            {
+                $queryArrayField[] = $fieldName;
+            }
+
+            foreach ($params['join']['key'] as  $key)
+            {
+                $queryArrayKey[] = $key;
+            }
+
+            foreach ($params['join']['foreignKey'] as  $foreignKey)
+            {
+                $queryArrayForeignKey[] = $foreignKey;
+            }
+
+            foreach($queryArrayKey as $key)
+            {
+                $queryAliasKey[] = "$tableName.$key";
+            }
+
+            $arrayCombineAliasFKey = array_combine($queryArrayAlias, $queryArrayForeignKey);
+
+            foreach($arrayCombineAliasFKey as $key => $value)
+            {
+                $queryArrayCombineAliasFKey[] = "$key.$value";
+            }
+
+            $queryArrayFieldTable = array_combine($queryArrayTableName, $queryArrayField);
+
+            foreach ($queryArrayFieldTable as $key => $value)
+            {
+                $queryArrayFieldData[] = "$key.$value";
+            }
+
+            $querySql = implode(",", $queryArrayFieldData);
+
+            $numberJoins = count($queryArrayTableName[]);
+
+            for ($i = 0; $i < $numberJoins; $i++)
+            {
+                $queryJoin .= "INNER JOIN $queryArrayTableName[$i] ON $queryAliasKey[$i] = $queryArrayCombineAliasFKey[$i]";
+            }
+
+            $this->Query("SELECT $querySql FROM $tableName   $queryJoin ");
+            return $this->fetchData();
+        }
 
         else if(empty($filter) && empty($params))
         {
@@ -118,5 +176,6 @@ class userModel extends Database
             return 0;
         }
     }
+
 }
 ?>
