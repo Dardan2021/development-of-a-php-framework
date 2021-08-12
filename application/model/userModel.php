@@ -31,7 +31,8 @@ class userModel extends Database
 
     public function fetchAllData($tableName, $filter = array(), $params = array())
     {
-        if(!empty($filter))
+
+        if(!empty($filter) && !isset($params['join']))
         {
             foreach ($filter as $columns => $value)
             {
@@ -41,83 +42,38 @@ class userModel extends Database
             $querySql = implode(",", $queryArray);
             $this->Query("SELECT * FROM " . "$tableName " . "WHERE " . "$querySql");
 
-            return $this->fetchData();
-        }
-
-        if(isset($params['fetch']))
-        {
-            switch($params['fetch'])
+            if(isset($params['fetch']))
             {
-                case 'array':
+                switch($params['fetch'])
+                {
+                    case 'array':
 
-                    return $this->fetchData();
+                        return $this->fetchData();
 
-                    break;
+                        break;
 
-                case 'value':
+                    case 'value':
 
-                    return $this->singleData();
+                        return $this->singleData();
 
-                    break;
+                        break;
+                }
             }
+
+            return $this->fetchData();
         }
 
         if(isset($params['join']))
         {
-            foreach ($params['join']['table'] as $joinTableName)
+            $querySqlJoin = array();
+            for ($i = 0; $i < count($params['join']); $i++)
             {
-                $queryArrayTableName[] = $joinTableName;
+                $querySqlJoin[] = "INNER JOIN " . $params['join'][$i]['table'] . " ON $tableName.". $params['join'][$i]['key']. " = ".$params['join'][$i]['table'].".".$params['join'][$i]['foreignKey'];
             }
 
-            foreach ($params['join']['alias'] as $aliasName)
-            {
-                $queryArrayAlias[] = $aliasName;
-            }
+            $joinSql = implode(" ", $querySqlJoin);
+            $this->Query("SELECT * FROM $tableName $joinSql");
 
-            foreach ($params['join']['field'] as $fieldName)
-            {
-                $queryArrayField[] = $fieldName;
-            }
-
-            foreach ($params['join']['key'] as  $key)
-            {
-                $queryArrayKey[] = $key;
-            }
-
-            foreach ($params['join']['foreignKey'] as  $foreignKey)
-            {
-                $queryArrayForeignKey[] = $foreignKey;
-            }
-
-            foreach($queryArrayKey as $key)
-            {
-                $queryAliasKey[] = "$tableName.$key";
-            }
-
-            $arrayCombineAliasFKey = array_combine($queryArrayAlias, $queryArrayForeignKey);
-
-            foreach($arrayCombineAliasFKey as $key => $value)
-            {
-                $queryArrayCombineAliasFKey[] = "$key.$value";
-            }
-
-            $queryArrayFieldTable = array_combine($queryArrayTableName, $queryArrayField);
-
-            foreach ($queryArrayFieldTable as $key => $value)
-            {
-                $queryArrayFieldData[] = "$key.$value";
-            }
-
-            $querySql = implode(",", $queryArrayFieldData);
-
-            $numberJoins = count($queryArrayTableName[]);
-
-            for ($i = 0; $i < $numberJoins; $i++)
-            {
-                $queryJoin .= "INNER JOIN $queryArrayTableName[$i] ON $queryAliasKey[$i] = $queryArrayCombineAliasFKey[$i]";
-            }
-
-            $this->Query("SELECT $querySql FROM $tableName   $queryJoin ");
             return $this->fetchData();
         }
 
@@ -176,6 +132,5 @@ class userModel extends Database
             return 0;
         }
     }
-
 }
 ?>

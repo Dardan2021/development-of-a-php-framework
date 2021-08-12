@@ -33,4 +33,15 @@ class Lightweight
       }
   }
 
+  public function helper($helperName)
+  {
+      if(file_exists("../system/helpers/".$helperName.".php"))
+      {
+          require_once "../system/helpers/".$helperName.".php";
+      }
+      else
+      {
+          echo "sorry it is not found";
+      }
+  }
 }
