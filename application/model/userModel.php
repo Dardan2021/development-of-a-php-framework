@@ -31,7 +31,8 @@ class userModel extends Database
 
     public function fetchAllData($tableName, $filter = array(), $params = array())
     {
-        if(!empty($filter))
+
+        if(!empty($filter) && !isset($params['join']))
         {
             foreach ($filter as $columns => $value)
             {
@@ -62,6 +63,19 @@ class userModel extends Database
             return $this->fetchData();
         }
 
+        if(isset($params['join']))
+        {
+            $querySqlJoin = array();
+            for ($i = 0; $i < count($params['join']); $i++)
+            {
+                $querySqlJoin[] = "INNER JOIN " . $params['join'][$i]['table'] . " ON $tableName.". $params['join'][$i]['key']. " = ".$params['join'][$i]['table'].".".$params['join'][$i]['foreignKey'];
+            }
+
+            $joinSql = implode(" ", $querySqlJoin);
+            $this->Query("SELECT * FROM $tableName $joinSql");
+
+            return $this->fetchData();
+        }
 
         else if(empty($filter) && empty($params))
         {

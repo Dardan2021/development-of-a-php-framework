@@ -11,7 +11,6 @@ class profileController extends Lightweight
         echo "index method";
     }
 
-
     public function insert($table, $data = array())
     {
        $storeModel = $this->model('userModel');
@@ -28,9 +27,28 @@ class profileController extends Lightweight
     public function myMethodFetchData()
     {
         $storeModel = $this->model("userModel");
-        $datas = $storeModel->fetchAllData("users", array("id" => 1), array('fetch' => "array"));
+        $filter="";
+
+        $params['join'][] = array(
+            "table"       => "teacher",
+            "key"         => "id",
+            "foreignKey"  => "id",
+            "alias"       => "teacher"
+        );
+
+        $params['join'][] = array(
+            "table"       => "class",
+            "key"         => "id",
+            "foreignKey"  => "id",
+            "alias"       => "class"
+        );
+
+        $datas = $storeModel->fetchAllData("users", $filter, $params);
         $dataArray['values'] = json_decode(json_encode($datas), true);
 
+        $this->helper('form');
+        $this->helper('url');
+        $this->helper('html');
         $this->view("userView", $dataArray);
     }
 
@@ -50,4 +68,15 @@ class profileController extends Lightweight
 
         return $storeModel->updateData("users", $data, $values);
     }
+
+    public function submitForm()
+    {
+        echo "form is submited";
+    }
+
+    public function anchor()
+    {
+        echo "this is an anchor";
+    }
+
 }
