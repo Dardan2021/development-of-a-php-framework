@@ -1,77 +1,76 @@
 <?php
-class profileController extends Lightweight
+
+foreach (glob("../application/firstPage/*.php") as $filename)
+{
+    include $filename;
+}
+
+class profileController extends myFramework
 {
     public function __construct()
     {
-
+        parent::__construct();
+        myFramework::model("userModel");
     }
 
-    public function index()
+    public static function index()
     {
         echo "index method";
     }
 
-    public function insert($table, $data = array())
+    public static function insert($table, $data = array())
     {
-       $storeModel = $this->model('userModel');
-
-       return $storeModel->insertData($table, $data);
+        return userModel::insertData($table, $data);
     }
 
-    public function myMethodNumberData()
+    public static function myMethodNumberData()
     {
-        $storeModel = $this->model("userModel");
-        echo $storeModel->fetchNrData("users");
+        echo userModel::fetchNrData("users");
     }
 
-    public function myMethodFetchData()
+    public static function myMethodFetchData()
     {
-        $storeModel = $this->model("userModel");
-        $filter="";
-
-        $params['join'][] = array(
-            "table"       => "teacher",
-            "key"         => "id",
-            "foreignKey"  => "id",
-            "alias"       => "teacher"
-        );
-
-        $params['join'][] = array(
-            "table"       => "class",
-            "key"         => "id",
-            "foreignKey"  => "id",
-            "alias"       => "class"
-        );
-
-        $datas = $storeModel->fetchAllData("users", $filter, $params);
-        $dataArray['values'] = json_decode(json_encode($datas), true);
-
-        $this->helper('form');
-        $this->helper('url');
-        $this->helper('html');
-        $this->view("userView", $dataArray);
+        myFramework::view("userView", firstPage::getDataFirstPage("users"));
+       // myFramework::validation();
     }
 
-    public function myMethodDeleteData()
+    public static function myMethodDeleteData()
     {
-        $storeModel = $this->model('userModel');
         $data = array("id" => 1);
 
-        return $storeModel->deleteData("users", $data);
+        return userModel::deleteData("users", $data);
     }
 
-    public function myMethodUpdateData()
+    public static function myMethodUpdateData()
     {
-        $storeModel = $this->model('userModel');
         $data = array("id" => 2);
-        $values= array("name" => "Dardan");
+        $values = array("name" => "Dardan");
 
-        return $storeModel->updateData("users", $data, $values);
+        return userModel::updateData("users", $data, $values);
     }
 
     public function submitForm()
     {
-        echo "form is submited";
+        /* echo $this->post('name');
+        echo "<br>";
+        echo $this->post('address');
+        echo $this->uri("2");*/
+        myFramework::validation('name', 'Full name', 'required|not_int');
+        if (self::run())
+        {
+            echo self::post('name');
+        }
+        else
+        {
+            print_r(self::$error);
+        }
+       /*$post = $_POST;
+       $data = array(
+            'address' => $post['address'],
+            'name' => $post['name']
+        );
+
+         return userModel::insertData('users', $data);*/
     }
 
     public function anchor()
