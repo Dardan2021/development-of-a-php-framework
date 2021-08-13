@@ -2,7 +2,7 @@
 
 class userModel extends Database
 {
-    public function insertData($table, $data)
+    public static function insertData($table, $data)
     {
         foreach ($data as $key => $value)
         {
@@ -14,7 +14,7 @@ class userModel extends Database
         $dataValues = implode(",", $arrayValue);
         $dataColumns = implode(",", $arrayKey);
 
-        if ($this->Query("INSERT INTO " . "$table ($dataColumns) values($dataValues)"))
+        if (self::Query("INSERT INTO " . "$table ($dataColumns) values($dataValues)"))
         {
             return true;
         }
@@ -26,12 +26,11 @@ class userModel extends Database
 
     public function fetchNrData($tableName)
     {
-        return $this->countData($tableName);
+        return self::countData($tableName);
     }
 
-    public function fetchAllData($tableName, $filter = array(), $params = array())
+    public static function fetchAllData($tableName, $filter = array(), $params = array())
     {
-
         if(!empty($filter) && !isset($params['join']))
         {
             foreach ($filter as $columns => $value)
@@ -40,7 +39,7 @@ class userModel extends Database
             }
 
             $querySql = implode(",", $queryArray);
-            $this->Query("SELECT * FROM " . "$tableName " . "WHERE " . "$querySql");
+            self::Query("SELECT * FROM " . "$tableName " . "WHERE " . "$querySql");
 
             if(isset($params['fetch']))
             {
@@ -48,19 +47,19 @@ class userModel extends Database
                 {
                     case 'array':
 
-                        return $this->fetchData();
+                        return self::fetchData();
 
                         break;
 
                     case 'value':
 
-                        return $this->singleData();
+                        return self::singleData();
 
                         break;
                 }
             }
 
-            return $this->fetchData();
+            return self::fetchData();
         }
 
         if(isset($params['join']))
@@ -72,21 +71,21 @@ class userModel extends Database
             }
 
             $joinSql = implode(" ", $querySqlJoin);
-            $this->Query("SELECT * FROM $tableName $joinSql");
+            self::Query("SELECT * FROM $tableName $joinSql");
 
-            return $this->fetchData();
+            return self::fetchData();
         }
 
         else if(empty($filter) && empty($params))
         {
-            if ($this->Query("SELECT * FROM " . "$tableName "))
+            if (self::Query("SELECT * FROM " . "$tableName "))
             {
-                return $this->fetchData();
+                return self::fetchData();
             }
         }
     }
 
-    public function deleteData($tableName, $filter= array())
+    public static function deleteData($tableName, $filter= array())
     {
         if(!empty($filter))
         {
@@ -97,14 +96,14 @@ class userModel extends Database
 
             $querySql = implode(",", $queryArray);
 
-            if($this->Query("DELETE FROM $tableName WHERE $querySql"))
+            if(self::Query("DELETE FROM $tableName WHERE $querySql"))
             {
                 echo "Data u hoq";
             }
         }
     }
 
-    public function updateData($tableName, $filter= array(), $updateValues)
+    public static function updateData($tableName, $filter= array(), $updateValues)
     {
         if(!empty($filter) && !empty($updateValues))
         {
@@ -122,7 +121,7 @@ class userModel extends Database
 
             $querySqlUpdateValues = implode(",", $queryArrayUpdateValues);
 
-            if($this->Query("UPDATE $tableName SET $querySqlUpdateValues WHERE $querySql"))
+            if(self::Query("UPDATE $tableName SET $querySqlUpdateValues WHERE $querySql"))
             {
                 echo "Data u ndryshua";
             }

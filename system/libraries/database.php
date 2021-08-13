@@ -10,16 +10,16 @@ class database
 
     private $password = PASSWORD;
 
-    protected $db;
+    public static $db;
 
-    protected $Query;
+    public static $Query;
 
     public function __construct()
     {
         try
         {
             $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->database;
-            $this->db = new PDO($dsn, $this->username, $this->password);
+            self::$db = new PDO($dsn, $this->username, $this->password);
             echo "u lidh";
         } catch (PDOException $e)
         {
@@ -27,35 +27,35 @@ class database
         }
     }
 
-    public function Query($query, $options = array())
+    public static function Query($query, $options = array())
     {
+        self::$Query = self::$db->prepare($query);
+
         if(empty($options))
         {
-            $this->Query = $this->db->prepare($query);
-            return  $this->Query->execute();
+            return self::$Query->execute();
         }
         else
         {
-            $this->Query = $this->db->prepare($query);
-            return  $this->Query->execute($options);
+            return self::$Query->execute($options);
         }
     }
 
-    public function countData($tableName)
+    public static function countData($tableName)
     {
-        $this->Query = $this->db->prepare("SELECT * FROM "."$tableName");
-        $this->Query->execute();
+        self::$Query = self::$db->prepare("SELECT * FROM "."$tableName");
+        self::$Query->execute();
 
-        return $this->Query->rowCount();
+        return self::$Query->rowCount();
     }
 
-    public function fetchData()
+    public static function fetchData()
     {
-        return $this->Query->fetchAll(PDO::FETCH_OBJ);
+        return self::$Query->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function singleData()
+    public static function singleData()
     {
-        return $this->Query->fetch(PDO::FETCH_OBJ);
+        return self::$Query->fetch(PDO::FETCH_OBJ);
     }
 }
