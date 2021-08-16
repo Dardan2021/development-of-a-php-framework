@@ -1,14 +1,14 @@
 <?php
 
-define("defaultController", "profileController");
-define("defaultMethod", "index");
-define("defaultParam", []);
+$database = array('host' => 'localhost',
+    'username' => 'root',
+    'database' => 'php_mvc',
+    'password' => '');
 
-//database connection
-define('HOST','localhost');
-define('USERNAME','root');
-define('DATABASE', 'php_mvc');
-define('PASSWORD', '');
+$default = array('defaultController' => 'profileController',
+    'method' => 'index',
+    'defaultParam' => [] );
 
-//base url CSS//
-define('BASE_URL', 'https://localhost/php/public');
+$settings = array('base_url' => 'https://localhost/php/public');
+
+

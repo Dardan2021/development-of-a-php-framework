@@ -3,8 +3,7 @@
 spl_autoload_register(function($className){
 include "libraries/$className.php";
 });
-
-include "config/config.php";
+include "settings.php";
 
 $Rout = new Rout;
 

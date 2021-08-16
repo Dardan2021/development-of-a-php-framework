@@ -89,7 +89,7 @@
 
     echo formInput(array(
         'type' => 'text',
-        'name' => 'fullname',
+        'name' => 'fullName',
         'id' => 'inputId',
         'class' => 'form-control',
         'placeholder' => 'enter name',

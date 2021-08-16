@@ -8,6 +8,11 @@ class myFramework
   {
       self::startSession();
 
+      foreach (glob("../application/model/*.php") as $filename)
+      {
+          include $filename;
+      }
+
       if (file_exists("../system/config/autoload.php"))
       {
           require_once "../system/config/autoload.php";

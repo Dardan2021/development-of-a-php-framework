@@ -60,12 +60,12 @@ class profileController extends myFramework
        // myFramework::validation('number', 'Number', 'required|int|min|4');
         //self::validation('number', 'Number', 'required|int|min|4');
         //self::myMethodFetchData();
-        self::validation('fullname', 'Full name', 'required|not_int');
+        self::validation('fullName', 'Full name', 'required|not_int');
         self::validation('number', 'Number', 'required|int|max|10');
         self::validation('confirmPassword', 'confirmPassword', 'confirm|password|required|not_int|max|10');
         self::validation('email', 'Email', 'unique|users|required');
 
-        $dataFile = array(
+      $dataFile = array(
             'fileName' => 'image',
             'allowedExtension' => 'jpg|png|JPG|PNG',
             'uploadPath' => 'images/',
@@ -76,7 +76,7 @@ class profileController extends myFramework
 
         $dataArray = array();
 
-     /*   if (self::fileRun())
+        if (self::fileRun())
         {
             var_dump("no");
         }
@@ -92,10 +92,11 @@ class profileController extends myFramework
         else
         {
             $dataArray[] = self::$fileErrors;
-        }*/
+        }
 
         if (self::run() && self::fileRun())
         {
+
             $sessionData = array(
                 'id' => 4,
                 'name' => self::post('fullName'),
@@ -103,11 +104,11 @@ class profileController extends myFramework
             );
 
             self::setSession($sessionData, $values);
+            self::setFlashMessage("accountSuccess", "your account was created with success");
             redirect("dashboard/profile");
         }
 
-      /*  else
-        {
+
             $arrayDatas['error'] = json_decode(json_encode($dataArray), true);
             //$arrayDatas['values'] = $data['error'];
 
@@ -117,16 +118,20 @@ class profileController extends myFramework
             $finalArray = array_merge($arrayDatas, $arrayDatas2);
 
             self::view('userView', $finalArray);
-            /*$post = $_POST;
+           /* $post = $_POST;
             $data = array(
                  'address' => $post['address'],
                  'name' => $post['name']
-             );
+             );*/
 
-              return userModel::insertData('users', $data);
-        }*/
+           //   return userModel::insertData('users', $data);
     }
 
+
+    public static function logout()
+    {
+        self::destroySession();
+    }
     public function anchor()
     {
         echo "this is an anchor";

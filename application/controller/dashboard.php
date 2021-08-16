@@ -3,7 +3,7 @@ class dashboard extends myFramework
 {
     public static function profile()
     {
-        echo $_SESSION['id'];
+        self::view('profile');
     }
 }
 ?>
