@@ -116,6 +116,14 @@ trait formValidation
           return $_POST[$fieldName];
       }
   }
+
+  public static function hash($password)
+  {
+      if(!empty($password))
+      {
+          return password_hash($password, PASSWORD_DEFAULT);
+      }
+  }
 }
 
 ?>

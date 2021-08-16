@@ -2,6 +2,7 @@
 
 class database
 {
+    use session;
     private $host = HOST;
 
     private $username = USERNAME;
@@ -73,5 +74,13 @@ class database
     public static function singleData()
     {
         return self::$Query->fetch(PDO::FETCH_OBJ);
+    }
+
+    public static function getSession($name)
+    {
+        if(!empty($name))
+        {
+            return $_SESSION[$name];
+        }
     }
 }

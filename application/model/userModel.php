@@ -131,5 +131,10 @@ class userModel extends Database
             return 0;
         }
     }
+
+    public static function fetchSession()
+    {
+        return self::getSession('name');
+    }
 }
 ?>
