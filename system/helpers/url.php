@@ -3,7 +3,7 @@
     {
         if(!empty($cssPath))
         {
-            return "<link rel='stylesheet' href='".BASE_URL. '/'.$cssPath."'>";
+            return "<link rel='stylesheet' href='/php/public/".$cssPath."'>";
         }
     }
 
@@ -11,7 +11,7 @@
     {
         if(!empty($jsPath))
         {
-            return "<script src='".BASE_URL. '/'.$jsPath."'></script>";
+            return "<script src='/php/public/".$jsPath."'></script>";
         }
     }
 ?>

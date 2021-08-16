@@ -10,7 +10,7 @@ class profileController extends myFramework
     public function __construct()
     {
         parent::__construct();
-        myFramework::model("userModel");
+        self::model("userModel");
     }
 
     public static function index()
@@ -30,7 +30,8 @@ class profileController extends myFramework
 
     public static function myMethodFetchData()
     {
-        myFramework::view("userView", firstPage::getDataFirstPage("users"));
+        self::view("userView", firstPage::getDataFirstPage("users"));
+
        // myFramework::validation();
     }
 
@@ -55,22 +56,75 @@ class profileController extends myFramework
         echo "<br>";
         echo $this->post('address');
         echo $this->uri("2");*/
-        myFramework::validation('name', 'Full name', 'required|not_int');
-        if (self::run())
+        //myFramework::validation('number', 'Number', 'required|not_int');
+       // myFramework::validation('number', 'Number', 'required|int|min|4');
+        //self::validation('number', 'Number', 'required|int|min|4');
+        //self::myMethodFetchData();
+        self::validation('fullname', 'Full name', 'required|not_int');
+        self::validation('number', 'Number', 'required|int|max|10');
+        self::validation('confirmPassword', 'confirmPassword', 'confirm|password|required|not_int|max|10');
+        self::validation('email', 'Email', 'unique|users|required');
+
+        $dataFile = array(
+            'fileName' => 'image',
+            'allowedExtension' => 'jpg|png|JPG|PNG',
+            'uploadPath' => 'images/',
+            'label' => 'image'
+        );
+
+        self::file($dataFile);
+
+        $dataArray = array();
+
+     /*   if (self::fileRun())
         {
-            echo self::post('name');
+            var_dump("no");
         }
         else
         {
-            print_r(self::$error);
+            $dataArray[] = self::$error;
         }
-       /*$post = $_POST;
-       $data = array(
-            'address' => $post['address'],
-            'name' => $post['name']
-        );
 
-         return userModel::insertData('users', $data);*/
+        if (self::run())
+        {
+            echo self::post('confirmPassword');
+        }
+        else
+        {
+            $dataArray[] = self::$fileErrors;
+        }*/
+
+        if (self::run() && self::fileRun())
+        {
+            $sessionData = array(
+                'id' => 4,
+                'name' => self::post('fullName'),
+                'email'=> self::post('email'),
+            );
+
+            self::setSession($sessionData, $values);
+            redirect("dashboard/profile");
+        }
+
+      /*  else
+        {
+            $arrayDatas['error'] = json_decode(json_encode($dataArray), true);
+            //$arrayDatas['values'] = $data['error'];
+
+
+
+            $arrayDatas2 = firstPage::getDataFirstPage("users");
+            $finalArray = array_merge($arrayDatas, $arrayDatas2);
+
+            self::view('userView', $finalArray);
+            /*$post = $_POST;
+            $data = array(
+                 'address' => $post['address'],
+                 'name' => $post['name']
+             );
+
+              return userModel::insertData('users', $data);
+        }*/
     }
 
     public function anchor()

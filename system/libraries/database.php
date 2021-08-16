@@ -41,12 +41,28 @@ class database
         }
     }
 
-    public static function countData($tableName)
+    public static function countData($tableName, $filter = array(), $params = array())
     {
-        self::$Query = self::$db->prepare("SELECT * FROM "."$tableName");
-        self::$Query->execute();
+        if(!empty($filter) && !isset($params['join'])) {
+            foreach ($filter as $columns => $value) {
+                $queryArray[] = "$columns='$value'";
+            }
 
-        return self::$Query->rowCount();
+            $querySql = implode(",", $queryArray);
+
+            self::Query("SELECT * FROM " . "$tableName " . "WHERE " . "$querySql");
+            self::$Query->execute();
+
+            return self::$Query->rowCount();
+        }
+
+        if(empty($filter))
+        {
+            self::Query("SELECT * FROM " . "$tableName ");
+            self::$Query->execute();
+
+            return self::$Query->rowCount();
+        }
     }
 
     public static function fetchData()
