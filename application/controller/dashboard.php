@@ -1,9 +1,9 @@
 <?php
-class dashboard
+class dashboard extends myFramework
 {
     public static function profile()
     {
-        echo "Dashboard";
+        echo $_SESSION['id'];
     }
 }
 ?>

@@ -2,10 +2,12 @@
 
 class myFramework
 {
-  use formValidation;
+  use formValidation, fileUpload, session;
 
   public function __construct()
   {
+      self::startSession();
+
       if (file_exists("../system/config/autoload.php"))
       {
           require_once "../system/config/autoload.php";
@@ -15,7 +17,7 @@ class myFramework
       }
   }
 
-  public static function view($viewName, $data = [])
+  public static function view($viewName, $data = array())
   {
       if (file_exists("../application/views/" . $viewName . ".php"))
       {
@@ -59,11 +61,11 @@ class myFramework
       }
   }
 
-  public function post($field_name)
+  public function post($fieldName)
   {
       if ($_SERVER['REQUEST_METHOD'] == 'post' || $_SERVER['REQUEST_METHOD'] == 'POST')
       {
-          return strip_tags(trim($_POST[$field_name]));
+          return strip_tags(trim($_POST[$fieldName]));
       }
       else
       {

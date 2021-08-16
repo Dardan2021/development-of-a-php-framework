@@ -19,7 +19,7 @@ class firstPage
         );
 
         $datas = userModel::fetchAllData($tableName, $filter, $params);
-        $dataArray['values'] = json_decode(json_encode($datas), true);
+        $dataArray['entity'] = json_decode(json_encode($datas), true);
 
         return $dataArray;
     }
