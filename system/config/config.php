@@ -1,6 +1,7 @@
 <?php
 
-$database = array('host' => 'localhost',
+$database = array(
+    'host' => 'localhost',
     'username' => 'root',
     'database' => 'php_mvc',
     'password' => '');
